@@ -6,8 +6,9 @@ const player = new Player(iframe);
 
 const onPlay = function ({ seconds }) {
   try {
-    // const currentTime = seconds;
     localStorage.setItem('videoplayer-current-time', seconds);
+    console.log(seconds);
+    
   } catch (error) {
     console.error('Set state error: ', error.message);
   }
