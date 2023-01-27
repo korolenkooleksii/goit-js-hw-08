@@ -6,35 +6,43 @@ const DATAFORM_KEY = 'feedback-form-state';
 
 form.addEventListener('input', inputExchangeDataWithStorage);
 
-updateData();
+function getSaveData() {
+  
+}
 
 function inputExchangeDataWithStorage(e) {
   // e.preventDefault();
 
-  const dataInput = { email, message };
   const {
     elements: { email, message },
   } = e.currentTarget;
 
-  dataInput.email = `${email.value}`;
-  dataInput.message = `${message.value}`;
+  // console.log(email);
+  // console.log(message);
 
-  localStorage.setItem(DATAFORM_KEY, JSON.stringify(dataInput));
+  const currentData = load(DATAFORM_KEY);
+  console.log(currentData);
+
+  // console.log('currentData', currentData);
+  // email.textContent = currentData.email;
+  // message.textContent = currentData.message;
+
+  if (currentData !== undefined) {
+    email.textContent = currentData.email;
+    message.textContent = currentData.message;
+  } else {
+    console.log('currentData пустой');
+  }
+
+  save(DATAFORM_KEY, createDataObject(email.value, message.value));
 }
 
-// function updateData() {
-//   try {
-//     const savedData = localStorage.getItem(DATAFORM_KEY);
-//     return (parsedData = null ? undefined : JSON.parse(savedData));
-//   } catch (error) {
-//     console.error('Get state error: ', error.message);
-//   }
-
-//   console.log('parsedData', parsedData);
-
-//   input.value = parsedData.email || '';
-//   textarea.textContent = parsedData.message || '';
-// }
+function createDataObject(email, message) {
+  return {
+    email,
+    message,
+  };
+}
 
 function save(key, value) {
   try {
