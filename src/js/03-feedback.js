@@ -1,38 +1,51 @@
+const throttle = require('lodash.throttle');
+
 const form = document.querySelector('.feedback-form');
-const input = document.querySelector('input[name="email"]');
-const textarea = document.querySelector('textarea[name="message"]');
+let input = document.querySelector('input[name="email"]');
+let textarea = document.querySelector('textarea[name="message"]');
 const submitBtn = document.querySelector('button[type="submit"]');
 const DATAFORM_KEY = 'feedback-form-state';
 
-form.addEventListener('input', inputExchangeDataWithStorage);
+form.addEventListener('input', throttle(inputDataInStorage, 500));
+form.addEventListener('submit', submitFormData);
 
-function getSaveData() {
-  
-}
+getSaveData();
 
-function inputExchangeDataWithStorage(e) {
-  // e.preventDefault();
+function submitFormData(e) {
+  e.preventDefault();
 
   const {
     elements: { email, message },
   } = e.currentTarget;
-
-  // console.log(email);
-  // console.log(message);
-
   const currentData = load(DATAFORM_KEY);
-  console.log(currentData);
 
-  // console.log('currentData', currentData);
-  // email.textContent = currentData.email;
-  // message.textContent = currentData.message;
-
-  if (currentData !== undefined) {
-    email.textContent = currentData.email;
-    message.textContent = currentData.message;
+  if (email.value === '' || message.value === '') {
+    alert('Please fill in all the fields!');
   } else {
-    console.log('currentData пустой');
+    console.log(`${DATAFORM_KEY}`, currentData);
+
+    textarea.textContent = '';
+    form.reset();
+    localStorage.removeItem(DATAFORM_KEY);
   }
+}
+
+function getSaveData() {
+  const currentData = load(DATAFORM_KEY);
+
+  if (currentData === undefined) {
+    input.value = '';
+    textarea.textContent = '';
+  } else {
+    input.value = currentData.email || '';
+    textarea.textContent = currentData.message || '';
+  }
+}
+
+function inputDataInStorage(e) {
+  const {
+    elements: { email, message },
+  } = e.currentTarget;
 
   save(DATAFORM_KEY, createDataObject(email.value, message.value));
 }
