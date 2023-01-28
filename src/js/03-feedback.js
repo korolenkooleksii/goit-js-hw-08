@@ -1,17 +1,21 @@
-const throttle = require('lodash.throttle');
+import throttle from 'lodash.throttle';
 
 const form = document.querySelector('.feedback-form');
-let input = document.querySelector('input[name="email"]');
-let textarea = document.querySelector('textarea[name="message"]');
-const submitBtn = document.querySelector('button[type="submit"]');
+const input = document.querySelector('input[name="email"]');
+const textarea = document.querySelector('textarea[name="message"]');
 const DATAFORM_KEY = 'feedback-form-state';
 
-form.addEventListener('input', throttle(inputDataInStorage, 500));
-form.addEventListener('submit', submitFormData);
+form.addEventListener('submit', onFormSubmin);
+form.addEventListener('input', throttle(onTextareaInput, 500));
 
-getSaveData();
+let formValues = {
+  email: "",
+  message: "",
+};
 
-function submitFormData(e) {
+populateDataFormOutput();
+
+function onFormSubmin(e) {
   e.preventDefault();
 
   const {
@@ -24,37 +28,23 @@ function submitFormData(e) {
   } else {
     console.log(`${DATAFORM_KEY}`, currentData);
 
-    textarea.textContent = '';
-    form.reset();
+    e.currentTarget.reset();
     localStorage.removeItem(DATAFORM_KEY);
   }
 }
 
-function getSaveData() {
-  const currentData = load(DATAFORM_KEY);
+function onTextareaInput() {
+  formValues.email = input.value;
+  formValues.message = textarea.value;
 
-  if (currentData === undefined) {
-    input.value = '';
-    textarea.textContent = '';
-  } else {
-    input.value = currentData.email || '';
-    textarea.textContent = currentData.message || '';
-  }
+  save(DATAFORM_KEY, formValues);
 }
 
-function inputDataInStorage(e) {
-  const {
-    elements: { email, message },
-  } = e.currentTarget;
+function populateDataFormOutput() {
+  const dataForm = load(DATAFORM_KEY);
 
-  save(DATAFORM_KEY, createDataObject(email.value, message.value));
-}
-
-function createDataObject(email, message) {
-  return {
-    email,
-    message,
-  };
+  input.value = dataForm.email;
+  textarea.value = dataForm.message;
 }
 
 function save(key, value) {
@@ -64,6 +54,7 @@ function save(key, value) {
   } catch (error) {
     console.error('Set state error: ', error.message);
   }
+  
 }
 
 function load(key) {
@@ -74,3 +65,6 @@ function load(key) {
     console.error('Get state error: ', error.message);
   }
 }
+
+// console.log(load(DATAFORM_KEY));
+
