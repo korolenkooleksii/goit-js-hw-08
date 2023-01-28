@@ -26,7 +26,7 @@ function onFormSubmin(e) {
   if (email.value === '' || message.value === '') {
     alert('Please fill in all the fields!');
   } else {
-    console.log(`${DATAFORM_KEY}`, currentData);
+    console.log(currentData);
 
     e.currentTarget.reset();
     localStorage.removeItem(DATAFORM_KEY);
