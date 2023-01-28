@@ -42,9 +42,14 @@ function onTextareaInput() {
 
 function populateDataFormOutput() {
   const dataForm = load(DATAFORM_KEY);
-
-  input.value = dataForm.email;
+  console.log(dataForm);
+  if (dataForm === undefined) {
+    input.value = '';
+    textarea.value = '';
+  } else {
+    input.value = dataForm.email;
   textarea.value = dataForm.message;
+  }
 }
 
 function save(key, value) {
