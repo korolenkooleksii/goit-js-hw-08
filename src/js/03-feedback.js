@@ -42,7 +42,6 @@ function onTextareaInput() {
 
 function populateDataFormOutput() {
   const dataForm = load(DATAFORM_KEY);
-  console.log(dataForm);
   if (dataForm === undefined) {
     input.value = '';
     textarea.value = '';
